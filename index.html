@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Hallo Chrissie – Animation</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta property="og:title" content="Hallo Chrissie – Animation" />
+  <meta property="og:description" content="Bunte, blinkende Buchstaben – tippe auf den Button, um die Seite in Safari zu öffnen." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='630'%3E%3Crect fill='%23ffffff' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='52%25' dominant-baseline='middle' text-anchor='middle' font-size='72' font-family='Arial,Helvetica,sans-serif' fill='%230a0a0a'%3EHallo Chrissie%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --appear-gap: 0.20s;
+      --blink-speed: 1.2s;
+      --bg: #ffffff;
+    }
+    html, body { height: 100%; }
+    body { margin: 0; display: grid; place-items: center; background: var(--bg);
+           font-family: ui-monospace, SFMono-Regular, "Roboto Mono", Menlo, Consolas, monospace; }
+    .wrap { text-align: center; user-select: none; padding: 2rem; }
+    h1 { margin: 0 0 1rem; line-height: 1.1; font-weight: 800; letter-spacing: 0.03em;
+         font-size: clamp(36px, 9vw, 112px); white-space: pre; }
+    .char { display: inline-block; opacity: 0; transform: translateY(0.5em) scale(0.98);
+            animation: appear 0.55s ease forwards calc(var(--i) * var(--appear-gap)),
+                       blinkColors var(--blink-speed) linear infinite calc(var(--i) * -0.15s); }
+    @keyframes appear { to { opacity: 1; transform: none; } }
+    @keyframes blinkColors { 0%{color:#ff3b30;} 20%{color:#ffcc00;} 40%{color:#34c759;} 60%{color:#0a84ff;} 80%{color:#af52de;} 100%{color:#ff3b30;} }
+    @media (prefers-reduced-motion: reduce) { .char { animation: appear 0.55s ease forwards calc(var(--i) * var(--appear-gap)); color:#222; } }
+    .controls { margin-top: 1rem; font-size: 14px; opacity: 0.8; }
+    .btn { border:0; padding:0.6rem 1rem; border-radius:999px; font-weight:700; cursor:pointer; background:#111; color:#fff; text-decoration:none; display:inline-block; }
+    .btn:active { transform: translateY(1px); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 id="title" aria-label="Hallo Chrissie"></h1>
+    <div class="controls">
+      <button class="btn" id="restart">Neu starten</button>
+    </div>
+  </div>
+  <script>
+    const text = "Hallo Chrissie";
+    const titleEl = document.getElementById("title");
+    const restartBtn = document.getElementById("restart");
+    function render() {
+      titleEl.innerHTML = "";
+      [...text].forEach((ch, i) => {
+        const span = document.createElement("span");
+        span.className = "char";
+        span.style.setProperty("--i", i);
+        span.textContent = ch === " " ? "\u00A0" : ch;
+        titleEl.appendChild(span);
+      });
+    }
+    restartBtn.addEventListener("click", () => {
+      titleEl.style.animation = "none";
+      titleEl.offsetHeight;
+      titleEl.style.animation = "";
+      render();
+    });
+    render();
+  </script>
+</body>
+</html>
